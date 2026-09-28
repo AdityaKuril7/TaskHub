@@ -5,10 +5,13 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.get("/", (req: Request, res: Response) => {
-  res.send("<h1> Api running... </h1>");
+  res.send("Hello world");
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at port ${port}`);
+  console.log(`Server is running at port http://localhost:${port}`);
 });
