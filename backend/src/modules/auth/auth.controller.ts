@@ -23,6 +23,11 @@ export const login = asyncHandler(
       throw new ApiError("Something missing or incorrect !", 400);
 
     const token = await authService.login(result.data as IAuth);
-    return res.status(200).json({ message: "Login successfully", token });
+    res.cookie("token",token,{
+      httpOnly:true,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    return res.status(200).json({ message: "Login successfully" });
   },
 );
