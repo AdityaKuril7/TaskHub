@@ -7,15 +7,28 @@ class TaskService {
 	async create(task: ICreateTask, userId: string) {
 		return await prisma.task.create({ data: { ...task, userId } });
 	}
-	async getAll(userId: string) {
-		return (await prisma.task.findMany({ where: { userId } })) as ITask[];
+	async getAll(userId: string, page: number, limit: number) {
+		const skip = (page - 1) * limit;
+		const [tasks, total] = await prisma.$transaction([
+			prisma.task.findMany({
+				where: {
+					userId,
+				},
+				skip,
+				take: limit,
+				orderBy: { created_at: "desc" },
+			}),
+			prisma.task.count(),
+		]);
+
+		return { tasks, total };
 	}
 	async getById(userId: string, taskId: string) {
 		return (await prisma.task.findUnique({
 			where: { id: taskId, userId },
 		})) as ITask;
 	}
-	async updateById(userId: string, data: ITask, taskId: string) {
+	async updateById(userId: string, data: any, taskId: string) {
 		const updatedTask = await prisma.task.update({
 			where: { id: taskId, userId },
 			data: { ...data },

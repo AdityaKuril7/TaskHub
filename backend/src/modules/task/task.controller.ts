@@ -3,7 +3,7 @@ import type { Response, Request } from "express";
 import taskService from "./task.service.js";
 import { createTaskValidation } from "../../validations/task.js";
 import { verifyToken } from "../../lib/jwt.js";
-
+import { paginationValidation } from "../../validations/task.js";
 export const createTask = asyncHandler(async (req: Request, res: Response) => {
 	const body = req.body;
 	const result = createTaskValidation.safeParse(body);
@@ -18,10 +18,15 @@ export const createTask = asyncHandler(async (req: Request, res: Response) => {
 
 export const getTasks = asyncHandler(async (req: Request, res: Response) => {
 	const decoded = verifyToken(req);
-	const tasks = await taskService.getAll(decoded.id);
+	const result = paginationValidation.safeParse(req.query);
+	if (!result.success) {
+		throw new ApiError(result.error.message, 400);
+	}
+	const { limit, page } = result.data;
+	const { tasks, total } = await taskService.getAll(decoded.id, page, limit);
 	return res
 		.status(200)
-		.json({ message: "Tasks fetched successfully !", tasks });
+		.json({ message: "Tasks fetched successfully !", tasks, total, nextPage });
 });
 
 export const getTask = asyncHandler(async (req: Request, res: Response) => {
@@ -45,7 +50,7 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
 		id as string,
 	);
 
-	return;
+	return res.status(200).json({ task: updatedTask });
 });
 
 export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
