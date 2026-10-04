@@ -7,15 +7,15 @@ class TaskService {
 	async create(task: ICreateTask, userId: string) {
 		return await prisma.task.create({ data: { ...task, userId } });
 	}
-	async getAll(userId: string, page: number, limit: number) {
-		const skip = (page - 1) * limit;
+	async getAll(userId: string) {
+		// const skip = (page - 1) * limit;
 		const [tasks, total] = await prisma.$transaction([
 			prisma.task.findMany({
 				where: {
 					userId,
 				},
-				skip,
-				take: limit,
+				// skip,
+				// take: limit,
 				orderBy: { created_at: "desc" },
 			}),
 			prisma.task.count(),

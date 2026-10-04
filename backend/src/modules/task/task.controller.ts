@@ -5,69 +5,69 @@ import { createTaskValidation } from "../../validations/task.js";
 import { verifyToken } from "../../lib/jwt.js";
 import { paginationValidation } from "../../validations/task.js";
 export const createTask = asyncHandler(async (req: Request, res: Response) => {
-	const body = req.body;
-	const result = createTaskValidation.safeParse(body);
-	if (!result.success) {
-		throw new ApiError(result.error.message);
-	}
-	const decoded = verifyToken(req);
-	const task = await taskService.create(result.data, decoded.id);
+  const body = req.body;
+  const result = createTaskValidation.safeParse(body);
+  if (!result.success) {
+    throw new ApiError(result.error.message);
+  }
+  const decoded = verifyToken(req);
+  const task = await taskService.create(result.data, decoded.id);
 
-	return res.status(201).json({ message: "Task created successfully !", task });
+  return res.status(201).json({ message: "Task created successfully !", task });
 });
 
 export const getTasks = asyncHandler(async (req: Request, res: Response) => {
-	const decoded = verifyToken(req);
-	const result = paginationValidation.safeParse(req.query);
-	if (!result.success) {
-		throw new ApiError(result.error.message, 400);
-	}
-	const { limit, page } = result.data;
-	const { tasks, total } = await taskService.getAll(decoded.id, page, limit);
-	return res
-		.status(200)
-		.json({ message: "Tasks fetched successfully !", tasks, total, nextPage });
+  const decoded = verifyToken(req);
+  // const result = paginationValidation.safeParse(req.query); -- Skip 
+  // if (!result.success) {
+  //   throw new ApiError(result.error.message, 400);
+  // }
+  // const { limit, page } = result.data;
+  const { tasks, total } = await taskService.getAll(decoded.id);
+  return res
+    .status(200)
+    .json({ message: "Tasks fetched successfully !", tasks, total });
 });
 
 export const getTask = asyncHandler(async (req: Request, res: Response) => {
-	const { id } = req.params;
-	if (!id) throw new ApiError("Task id is missing !", 400);
-	const decoded = verifyToken(req);
-	const task = await taskService.getById(decoded.id, id as string);
-	return res.status(200).json({ message: "Task fetched successfully !", task });
+  const { id } = req.params;
+  if (!id) throw new ApiError("Task id is missing !", 400);
+  const decoded = verifyToken(req);
+  const task = await taskService.getById(decoded.id, id as string);
+  return res.status(200).json({ message: "Task fetched successfully !", task });
 });
 
 export const updateTask = asyncHandler(async (req: Request, res: Response) => {
-	const { id } = req.params;
-	if (!id) throw new ApiError("Task id is missing !", 400);
+  const { id } = req.params;
+  if (!id) throw new ApiError("Task id is missing !", 400);
 
-	const body = req.body;
-	const decoded = verifyToken(req);
+  const body = req.body;
+  const decoded = verifyToken(req);
 
-	const updatedTask = await taskService.updateById(
-		decoded.id,
-		body,
-		id as string,
-	);
+  const updatedTask = await taskService.updateById(
+    decoded.id,
+    body,
+    id as string,
+  );
 
-	return res.status(200).json({ task: updatedTask });
+  return res.status(200).json({ task: updatedTask });
 });
 
 export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
-	const { id } = req.params;
-	if (!id) throw new ApiError("Task id is missing !", 400);
+  const { id } = req.params;
+  if (!id) throw new ApiError("Task id is missing !", 400);
 
-	const decoded = verifyToken(req);
-	await taskService.deleteById(decoded.id, id as string);
+  const decoded = verifyToken(req);
+  await taskService.deleteById(decoded.id, id as string);
 
-	return res.status(204).json();
+  return res.status(204).json();
 });
 
 export const deleteAllTask = asyncHandler(
-	async (req: Request, res: Response) => {
-		const decoded = verifyToken(req);
-		await taskService.deleteAll(decoded.id);
+  async (req: Request, res: Response) => {
+    const decoded = verifyToken(req);
+    await taskService.deleteAll(decoded.id);
 
-		return res.status(204);
-	},
+    return res.status(204);
+  },
 );
