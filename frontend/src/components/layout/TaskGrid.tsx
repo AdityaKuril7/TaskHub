@@ -1,9 +1,8 @@
 "use client";
-import { Loader, Loader2, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import TaskCard from "@/components/ui/TaskCard";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useTasks } from "@/hooks/task/use-tasks";
 import NoTask from "../ui/NoTask";
 export interface ITask {
   id: string;
@@ -47,7 +46,7 @@ export default function TaskGrid({ tasks }: TaskGridProps) {
         <div className={"flex gap-2 items-center"}>
           <p>Filter Task :</p>
           <select
-            onChange={(e) => handleFilter(e.target.value)}
+            // onChange={(e) => handleFilter(e.target.value)}
             className={"border px-5 py-2 rounded-lg"}
           >
             <option>All</option>

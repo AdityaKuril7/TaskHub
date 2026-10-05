@@ -1,6 +1,5 @@
 import { ITask } from "@/components/layout/TaskGrid";
 import { Circle } from "lucide-react";
-import React from "react";
 
 export default function SingleTaskCard({ task }: { task: ITask }) {
   return (

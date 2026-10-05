@@ -4,7 +4,7 @@ import TaskGrid, { ITask } from "@/components/layout/TaskGrid";
 import Loader from "@/components/ui/Loader";
 import { useTasks } from "@/hooks/task/use-tasks";
 import { useTaskStore } from "@/store/useTaskStore";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 export default function PendingPage() {
   const { data, isPending } = useTasks();

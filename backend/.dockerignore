@@ -1,0 +1,5 @@
+node_modules
+.windsurf
+.claude
+.agents
+.env

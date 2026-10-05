@@ -4,12 +4,9 @@ import {
   CalendarDays,
   Clock3,
   Flag,
-  FileText,
-  Trash2,
+  FileText
 } from "lucide-react";
 import { ITask } from "./TaskGrid";
-import { useDeleteTask } from "@/hooks/task/use-delete-task";
-import { queryClient } from "@/lib/query-client";
 
 interface TaskDetailsProps {
   task: ITask | null;

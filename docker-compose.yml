@@ -1,0 +1,40 @@
+services:
+  frontend: 
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    container_name: taskhub_frontend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    container_name: taskhub_backend
+    environment:
+      PORT: 8000
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD}@database:5432/task_hub?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:17-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: task_hub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d task_hub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data: 

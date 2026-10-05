@@ -1,9 +1,7 @@
 "use client";
-import React from "react";
 import TaskGrid, { ITask } from "@/components/layout/TaskGrid";
 import { useTasks } from "@/hooks/task/use-tasks";
 import Loader from "@/components/ui/Loader";
-import { Circle } from "lucide-react";
 import TaskDetails from "@/components/layout/TaskDetails";
 import { useTaskStore } from "@/store/useTaskStore";
 export default function Home() {
